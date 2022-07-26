@@ -59,7 +59,7 @@ def fun_readDoseNRRD(filepath, **kwargs):
         dose_data[dose_file] = data
         dose_data_size[dose_file] = space_directions
     else:
-        print(f'The dose cube has dimensions {data.shape}')
+        #print(f'The dose cube has dimensions {data.shape}')
         dose_data.append(data)
         dose_data_size.append(space_directions)
 
@@ -112,7 +112,7 @@ def fun_gamma_analysis(dose1, dose2, dosediscrit, cuoff, maxdose, interfra, maxg
         'random_subset': None,
         'max_gamma': float(maxgamma),
         'local_gamma': False,
-        'quiet': False
+        'quiet': True
     }
     local_gamma = False
     max_dose = 0
@@ -133,7 +133,7 @@ def fun_gamma_analysis(dose1, dose2, dosediscrit, cuoff, maxdose, interfra, maxg
         gamma_options['dose_percent_threshold'] = int(dosecrit)
         gamma_options['distance_mm_threshold'] = int(discrit)
 
-        start_time = time.time()
+        #start_time = time.time()
         gamma = pymedphys.gamma(
             axes_reference, dose_reference,
             axes_evaluation, dose_evaluation_fx,
@@ -143,7 +143,7 @@ def fun_gamma_analysis(dose1, dose2, dosediscrit, cuoff, maxdose, interfra, maxg
         gammavalue=len(valid_gamma[valid_gamma <= 1]) / len(valid_gamma) * 100
         print(
             f"Criteria {dosecrit}%/{discrit}mm Passing Rate(\u03B3<=1): {len(valid_gamma[valid_gamma <= 1]) / len(valid_gamma) * 100}%")
-        print("cputime ", time.time() - start_time)
+        #print("cputime ", time.time() - start_time)
         gammalist.append(round(gammavalue,2))
     # write files
     No_firstline = True
@@ -227,7 +227,7 @@ if __name__ == '__main__':
     parser.add_argument("-p", "--prone", required=False, action='store_true',
                         help="file is prone",default=False)
     args = parser.parse_args()
-
+    print('start a new analysis')
     fun_gamma_analysis(args.ref, args.comp, args.dosediscrit, args.cutoff, args.maxdose, args.interfra, args.maxgamma,
                        args.fraction, args.saveas,args.prone)
 
