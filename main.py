@@ -112,7 +112,7 @@ def fun_gamma_analysis(dose1, dose2, dosediscrit, cuoff, maxdose, interfra, maxg
         'random_subset': None,
         'max_gamma': float(maxgamma),
         'local_gamma': False,
-        'quiet': True
+        'quiet': False
     }
     local_gamma = False
     max_dose = 0
