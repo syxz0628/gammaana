@@ -142,7 +142,7 @@ def fun_gamma_analysis(dose1, dose2, dosediscrit, cuoff, maxdose, interfra, maxg
         valid_gamma = gamma[~np.isnan(gamma)]
         gammavalue=len(valid_gamma[valid_gamma <= 1]) / len(valid_gamma) * 100
         print(
-            f"Criteria {dosecrit}%/{discrit}mm passing rate(\u03B3<=1): {len(valid_gamma[valid_gamma <= 1]) / len(valid_gamma) * 100}%")
+            f"Criteria {dosecrit}%/{discrit}mm Passing Rate(\u03B3<=1): {len(valid_gamma[valid_gamma <= 1]) / len(valid_gamma) * 100}%")
         print("cputime ", time.time() - start_time)
         gammalist.append(round(gammavalue,2))
     # write files
@@ -157,7 +157,7 @@ def fun_gamma_analysis(dose1, dose2, dosediscrit, cuoff, maxdose, interfra, maxg
         # file_save.writelines(str(datetime.today()) + ' ' + str(datetime.utcnow()) + '\n')
         if (No_firstline):
             file_save.writelines('reference   compare  criteria Passing-rate\n')
-        file_save.writelines(dose1[:20]+'...'+dose1[-15:]+' '+dose2[:20]+'...'+dose2[-15:]+' ')
+        file_save.writelines(dose1[16:36]+'...'+dose1[-15:]+' '+dose2[30:55]+'...'+dose2[-15:]+' ')
         for temp in range(0,len(gammalist)):
             file_save.writelines(str(criterialist[temp])+' '+str(gammalist[temp])+ '% ')
         file_save.write("\n")
