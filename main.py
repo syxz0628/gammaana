@@ -208,7 +208,7 @@ if __name__ == '__main__':
     parser.add_argument("-c", "--comp", required=True,
                         help="compare dose file (nrrd/DCM)")
     parser.add_argument("-dodi", "--dosediscrit", required=False, nargs='?',
-                        help="criteria for dose deviation and distance to agreement, default:[3,3]", default=[3, 3])
+                        help="criteria for dose deviation and distance to agreement, e.g. 3/3,2/2,1/1. default:3/3", default=3/3)
     parser.add_argument("-cu", "--cutoff", required=False, nargs='?',
                         help="The percent lower dose cutoff above which gamma will be calculated. Only applied to the reference grid. Default: 10 (%)",
                         default=10)
@@ -216,7 +216,7 @@ if __name__ == '__main__':
                         help="max dose for percentage calculation, one of 'local','global',or number", default='global')
     parser.add_argument("-i", "--interfra", required=False, nargs='?',
                         help=" The fraction which gamma distance threshold is divided into for interpolation. Defaults to 5 (0.6mm step for 3mm criteria), less=faster",
-                        default=10)
+                        default=5)
     parser.add_argument("-mg", "--maxgamma", required=False, nargs='?',
                         help="Once a search distance is reached that would give gamma values larger than this parameter, the search stops. less=faster. >1",
                         default=1.1)
