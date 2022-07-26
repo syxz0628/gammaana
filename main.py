@@ -38,7 +38,7 @@ def fun_readDoseNRRD(filepath, **kwargs):
                 outFile.write(line)
 
     data, header = nrrd.read(temppath)
-    #os.system("rm " + temppath)
+    os.system("rm " + temppath)
     data = np.array(data)
 
     # do = plt.imshow(np.rot90(dose_masked[slice_x_dose, slice_y_dose, slice_z_dose]), origin='lower',
