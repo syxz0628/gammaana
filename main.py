@@ -7,7 +7,7 @@ import time
 import os
 import nrrd
 import sys
-
+import matplotlib.pyplot as plt
 
 def fun_readDoseNRRD(filepath, **kwargs):
     directory = filepath[:filepath.rfind("/") + 1]
@@ -38,8 +38,13 @@ def fun_readDoseNRRD(filepath, **kwargs):
                 outFile.write(line)
 
     data, header = nrrd.read(temppath)
-    os.system("rm " + temppath)
+    #os.system("rm " + temppath)
     data = np.array(data)
+
+    # do = plt.imshow(np.rot90(dose_masked[slice_x_dose, slice_y_dose, slice_z_dose]), origin='lower',
+    #                 extent=[0., dose_masked[slice_x_dose, slice_y_dose, slice_z_dose].shape[0] * pixel_size_dose[0], 0.,
+    #                         dose_masked[slice_x_dose, slice_y_dose, slice_z_dose].shape[1] * pixel_size_dose[1]],
+    #                 cmap=cmap, alpha=dose_alpha, norm=norm)
     data = np.resize(data, (header['sizes'][0], header['sizes'][1], header['sizes'][2]))
     if not np.any(space_directions):
         try:
@@ -77,26 +82,30 @@ def fun_readDoseNRRD(filepath, **kwargs):
     axes_array_np = tuple(axes_array)
     return axes_array_np, data
 
-def fun_gamma_analysis(dose1, dose2, dosediscrit, cuoff, maxdose, interfra, maxgamma, fraction, saveresultas):
-    if dose1[dose1.rfind('.'):] == '.dcm':
+def fun_gamma_analysis(dose1, dose2, dosediscrit, cuoff, maxdose, interfra, maxgamma, fraction, saveresultas,pronecase):
+    if dose1[dose1.rfind('.'):] == '.dcm' and dose2[dose2.rfind('.'):] == '.dcm':
         reference = pydicom.dcmread(dose1)
-        axes_reference, dose_reference = pymedphys.dicom.zyx_and_dose_from_dataset(reference)
-    elif dose1[dose1.rfind('.'):] == '.nrrd':
-        axes_reference, dose_reference = fun_readDoseNRRD(dose1)
-    else:
-        print("wrong dose file (nrrd or dcm dose files), check input.")
-        sys.exit()
-
-    if dose2[dose2.rfind('.'):] == '.dcm':
         evaluation = pydicom.dcmread(dose2)
+        axes_reference, dose_reference = pymedphys.dicom.zyx_and_dose_from_dataset(reference)
         axes_evaluation, dose_evaluation = pymedphys.dicom.zyx_and_dose_from_dataset(evaluation)
-    elif dose2[dose2.rfind('.'):] == '.nrrd':
+    elif dose1[dose1.rfind('.'):] == '.nrrd' and dose2[dose2.rfind('.'):] == '.nrrd':
+        axes_reference, dose_reference = fun_readDoseNRRD(dose1)
         axes_evaluation, dose_evaluation = fun_readDoseNRRD(dose2)
     else:
-        print("wrong dose file (nrrd or dcm dose files), check input.")
+        print("wrong dose file (nrrd or dcm dose files only), check input.")
         sys.exit()
 
-    dose_evaluation_fx = float(fraction) * dose_evaluation
+    if pronecase:
+        dose_ref_temp=np.fliplr(dose_reference[:,:,])
+        dose_reference=np.flipud(dose_ref_temp[:,:,])
+    dose_evaluation_fx=dose_evaluation*float(fraction)
+
+    # p = dose_reference[:, :, 70]
+    # plt.imshow(np.fliplr(p), origin='lower')
+    # plt.show()
+    # p = dose_evaluation_fx[:, :, 70]
+    # plt.imshow(np.fliplr(p), origin='lower')
+    # plt.show()
     gamma_options = {
         'lower_percent_dose_cutoff': int(cuoff),
         'interp_fraction': int(interfra),  # Should be 10 or more for more accurate results
@@ -153,6 +162,17 @@ def fun_gamma_analysis(dose1, dose2, dosediscrit, cuoff, maxdose, interfra, maxg
             file_save.writelines(str(criterialist[temp])+' '+str(gammalist[temp])+ '% ')
         file_save.write("\n")
 
+
+def nrrd_eachlayer_flip180(arr):
+    print("prone case detected, flipping the reference data...")
+    arr_new = []
+    for one_layer in arr:
+        new_arr = one_layer.reshape(one_layer.size)
+        new_arr = new_arr[::-1]
+        arr_new.append(new_arr)
+    arr_new = np.array(arr_new).reshape(np.array(arr).shape)
+    return arr_new
+
 def fun_1Dgamma():
     reference = np.genfromtxt('dose_film_1D_z0mm.csv', delimiter=',', skip_header=1)
     evaluation = np.genfromtxt('dose_MC_1D_z0mm.csv', delimiter=',', skip_header=1)
@@ -195,7 +215,7 @@ if __name__ == '__main__':
     parser.add_argument("-m", "--maxdose", required=False, nargs='?',
                         help="max dose for percentage calculation, one of 'local','global',or number", default='global')
     parser.add_argument("-i", "--interfra", required=False, nargs='?',
-                        help=" The fraction which gamma distance threshold is divided into for interpolation. Defaults to 5 (0.6mm step for 3mm criteria)",
+                        help=" The fraction which gamma distance threshold is divided into for interpolation. Defaults to 5 (0.6mm step for 3mm criteria), less=faster",
                         default=10)
     parser.add_argument("-mg", "--maxgamma", required=False, nargs='?',
                         help="Once a search distance is reached that would give gamma values larger than this parameter, the search stops. less=faster. >1",
@@ -204,9 +224,11 @@ if __name__ == '__main__':
                         help="No. of fractions for compared dose, scale by multiply", default=1)
     parser.add_argument("-s", "--saveas", required=False, nargs='?',
                         help="Save the gamma result to file the path and name of the file.", default='./gammaresults.txt')
+    parser.add_argument("-p", "--prone", required=False, action='store_true',
+                        help="file is prone",default=False)
     args = parser.parse_args()
 
     fun_gamma_analysis(args.ref, args.comp, args.dosediscrit, args.cutoff, args.maxdose, args.interfra, args.maxgamma,
-                       args.fraction, args.saveas)
+                       args.fraction, args.saveas,args.prone)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
