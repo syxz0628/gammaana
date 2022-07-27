@@ -6,4 +6,5 @@ require pymedphys,numpy,pydicom,pynrrd.
 
 # reparation:
 >pip install pymedphys
+
 >pip install pydicom
