@@ -82,7 +82,7 @@ def fun_readDoseNRRD(filepath, **kwargs):
     axes_array_np = tuple(axes_array)
     return axes_array_np, data
 
-def fun_gamma_analysis(dose1, dose2, dosediscrit, cuoff, maxdose, interfra, maxgamma, fraction, saveresultas,pronecase):
+def fun_gamma_analysis(dose1, dose2, dosediscrit, cuoff, maxdose, interfra, maxgamma, fraction, saveresultas,pronecase,moreinfo):
     if dose1[dose1.rfind('.'):] == '.dcm' and dose2[dose2.rfind('.'):] == '.dcm':
         reference = pydicom.dcmread(dose1)
         evaluation = pydicom.dcmread(dose2)
@@ -114,6 +114,8 @@ def fun_gamma_analysis(dose1, dose2, dosediscrit, cuoff, maxdose, interfra, maxg
         'local_gamma': False,
         'quiet': True
     }
+    if moreinfo :
+        gamma_options['quiet']=False
     local_gamma = False
     max_dose = 0
     if 'local' in maxdose:
@@ -225,10 +227,12 @@ if __name__ == '__main__':
     parser.add_argument("-s", "--saveas", required=False, nargs='?',
                         help="Save the gamma result to file the path and name of the file.", default='./gammaresults.txt')
     parser.add_argument("-p", "--prone", required=False, action='store_true',
-                        help="file is prone",default=False)
+                        help="prone case, reference nrrd will be flipped lr and un",default=False)
+    parser.add_argument("-info", "--info", required=False, action='store_true',
+                        help="active more information mode", default=False)
     args = parser.parse_args()
     print('start a new analysis')
     fun_gamma_analysis(args.ref, args.comp, args.dosediscrit, args.cutoff, args.maxdose, args.interfra, args.maxgamma,
-                       args.fraction, args.saveas,args.prone)
+                       args.fraction, args.saveas,args.prone,args.info)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
