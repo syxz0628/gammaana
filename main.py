@@ -104,7 +104,7 @@ class class_gammaanalysis():
         if pronecase:
             dose_ref_temp = np.fliplr(dose_reference[:, :, ])
             dose_reference = np.flipud(dose_ref_temp[:, :, ])
-            write2file=dose2[:dose2.rfind('.')]+'rewrite_ref.nrrd'
+            write2file=dose2[:dose2.rfind('.')]+'_rewrite_ref.nrrd'
             nrrd.write(write2file, dose_reference, self.header)
             write2file=dose2[:dose2.rfind('.')]+'_rewrite_com.nrrd'
             nrrd.write(write2file, dose_evaluation_fx, self.header)
