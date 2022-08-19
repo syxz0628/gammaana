@@ -12,8 +12,6 @@ import matplotlib.pyplot as plt
 class class_gammaanalysis():
     def __init__(self):
         self.header=[]
-
-
     def fun_readDoseNRRD(self,filepath, **kwargs):
         directory = filepath[:filepath.rfind("/") + 1]
         temppath = "MakeContour_tempFileWoSpaceDir.nrrd"
@@ -87,7 +85,7 @@ class class_gammaanalysis():
         axes_array_np = tuple(axes_array)
         return axes_array_np, data
 
-    def fun_gamma_analysis(self,dose1, dose2, dosediscrit, cuoff, maxdose, interfra, maxgamma, fraction, saveresultas,pronecase,moreinfo):
+    def fun_gamma_analysis(self,additionalinfo,dose1, dose2, dosediscrit, cuoff, maxdose, interfra, maxgamma, fraction, saveresultas,pronecase,moreinfo):
         if dose1[dose1.rfind('.'):] == '.dcm' and dose2[dose2.rfind('.'):] == '.dcm':
             reference = pydicom.dcmread(dose1)
             evaluation = pydicom.dcmread(dose2)
@@ -97,7 +95,7 @@ class class_gammaanalysis():
             axes_reference, dose_reference = self.fun_readDoseNRRD(dose1)
             axes_evaluation, dose_evaluation = self.fun_readDoseNRRD(dose2)
         else:
-            print("wrong dose file (nrrd or dcm dose files only), check input.")
+            print("wrong dose file (both ref and com should be nrrd or dcm dose files only), check input.")
             sys.exit()
 
         dose_evaluation_fx=dose_evaluation*float(fraction)
@@ -167,8 +165,11 @@ class class_gammaanalysis():
         with open(saveresultas, 'a+') as file_save:
             # file_save.writelines(str(datetime.today()) + ' ' + str(datetime.utcnow()) + '\n')
             if (No_firstline):
-                file_save.writelines('reference   compare  criteria Passing-rate\n')
-            file_save.writelines(dose1[16:36]+'...'+dose1[-15:]+' '+dose2[30:55]+'...'+dose2[-15:]+' ')
+                file_save.writelines('addtionalinfo   reference   compare  criteria Passing-rate\n')
+            additionalinfo_replace=''
+            if additionalinfo!='':
+                additionalinfo_replace=additionalinfo.replace('_',' ')
+            file_save.writelines(additionalinfo_replace+' '+dose1[-9:]+' '+dose2[-9:]+' ')
             for temp in range(0,len(gammalist)):
                 file_save.writelines(str(criterialist[temp])+' '+str(gammalist[temp])+ '% ')
             file_save.write("\n")
@@ -223,15 +224,17 @@ if __name__ == '__main__':
     parser.add_argument("-f", "--fraction", required=False, nargs='?',
                         help="No. of fractions for compared dose, scale by multiply", default=1)
     parser.add_argument("-s", "--saveas", required=False, nargs='?',
-                        help="Save the gamma result to file the path and name of the file.", default='./gammaresults.txt')
+                        help="Save the gamma result to file the path and name of the file.", default='./gamma_log/gammaresults.txt')
     parser.add_argument("-p", "--prone", required=False, action='store_true',
                         help="prone case, reference nrrd will be flipped lr and un",default=False)
+    parser.add_argument("-a", "--addition", required=False, nargs='?',
+                        help="set additional information for output such as beam name, plan name, patient ID etc.")
     parser.add_argument("-info", "--info", required=False, action='store_true',
                         help="active more information mode", default=False)
     args = parser.parse_args()
     print('start a new analysis')
     gammaana=class_gammaanalysis()
-    gammaana.fun_gamma_analysis(args.ref, args.comp, args.dosediscrit, args.cutoff, args.maxdose, args.interfra, args.maxgamma,
+    gammaana.fun_gamma_analysis(args.addition,args.ref, args.comp, args.dosediscrit, args.cutoff, args.maxdose, args.interfra, args.maxgamma,
                        args.fraction, args.saveas, args.prone, args.info)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
