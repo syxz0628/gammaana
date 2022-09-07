@@ -224,7 +224,7 @@ if __name__ == '__main__':
     parser.add_argument("-f", "--fraction", required=False, nargs='?',
                         help="No. of fractions for compared dose, scale by multiply", default=1)
     parser.add_argument("-s", "--saveas", required=False, nargs='?',
-                        help="Save the gamma result to file the path and name of the file.", default='./gamma_log/gammaresults.txt')
+                        help="Save the gamma result to file the path and name of the file.", default='./gamma_logs/gammaresults.txt')
     parser.add_argument("-p", "--prone", required=False, action='store_true',
                         help="prone case, reference nrrd will be flipped lr and un",default=False)
     parser.add_argument("-a", "--addition", required=False, nargs='?',
