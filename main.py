@@ -14,7 +14,7 @@ class class_gammaanalysis():
         self.header=[]
     def fun_readDoseNRRD(self,filepath, **kwargs):
         directory = filepath[:filepath.rfind("/") + 1]
-        temppath = "MakeContour_tempFileWoSpaceDir.nrrd"
+        temppath = directory+"MakeContour_tempFileWoSpaceDir.nrrd"
         space_directions = []
         space_origins = []
         dose_data = []
