@@ -214,19 +214,19 @@ if __name__ == '__main__':
                         help="The percent lower dose cutoff above which gamma will be calculated. Only applied to the reference grid. Default: 10",
                         default=10)
     parser.add_argument("-m", "--maxdose", required=False, nargs='?',
-                        help="max dose for percentage calculation, one of 'local','global',or number", default='global')
+                        help="max dose for percentage calculation, one of 'local','global',or number,default:global", default='global')
     parser.add_argument("-i", "--interfra", required=False, nargs='?',
                         help=" The fraction which gamma distance threshold is divided into for interpolation. Defaults to 5 (0.6mm step for 3mm criteria), less=faster",
                         default=5)
     parser.add_argument("-mg", "--maxgamma", required=False, nargs='?',
-                        help="Once a search distance is reached that would give gamma values larger than this parameter, the search stops. less=faster. >1",
+                        help="Once a search distance is reached that would give gamma values larger than this parameter, the search stops. less=faster. >1, default=1.1",
                         default=1.1)
     parser.add_argument("-f", "--fraction", required=False, nargs='?',
-                        help="No. of fractions for compared dose, scale by multiply", default=1)
+                        help="No. of fractions for compared dose, scale by multiply, default:1", default=1)
     parser.add_argument("-s", "--saveas", required=False, nargs='?',
-                        help="Save the gamma result to file the path and name of the file.", default='./Analysis_logs/gamma_logs/gammaresults.txt')
+                        help="Save the gamma result to file the path and name of the file. Default=./gammaresults.txt", default='./gammaresults.txt')
     parser.add_argument("-p", "--prone", required=False, action='store_true',
-                        help="prone case, reference nrrd will be flipped lr and un",default=False)
+                        help="prone case, reference nrrd will be flipped lr and un,default:not active",default=False)
     parser.add_argument("-a", "--addition", required=False, nargs='?',
                         help="set additional information for output such as beam name, plan name, patient ID etc.")
     parser.add_argument("-info", "--info", required=False, action='store_true',
