@@ -211,7 +211,7 @@ if __name__ == '__main__':
     parser.add_argument("-dodi", "--dosediscrit", required=False, nargs='?',
                         help="criteria for dose deviation and distance to agreement, e.g. 3/3,2/2,1/1. default:3/3", default=3/3)
     parser.add_argument("-cu", "--cutoff", required=False, nargs='?',
-                        help="The percent lower dose cutoff above which gamma will be calculated. Only applied to the reference grid. Default: 10 (%)",
+                        help="The percent lower dose cutoff above which gamma will be calculated. Only applied to the reference grid. Default: 10",
                         default=10)
     parser.add_argument("-m", "--maxdose", required=False, nargs='?',
                         help="max dose for percentage calculation, one of 'local','global',or number", default='global')
