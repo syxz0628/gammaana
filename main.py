@@ -167,7 +167,7 @@ class class_gammaanalysis():
             if (No_firstline):
                 file_save.writelines('addtionalinfo   reference   compare  criteria Passing-rate\n')
             additionalinfo_replace=''
-            if additionalinfo!='':
+            if additionalinfo!=None:
                 additionalinfo_replace=additionalinfo.replace('%',' ')
             file_save.writelines(additionalinfo_replace+' '+dose1[-9:]+' '+dose2[-9:]+' ')
             for temp in range(0,len(gammalist)):
