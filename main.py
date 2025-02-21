@@ -8,7 +8,7 @@ import os
 import nrrd
 import sys
 import matplotlib.pyplot as plt
-
+import sys
 class class_gammaanalysis():
     def __init__(self):
         self.header=[]
